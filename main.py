@@ -4,7 +4,8 @@ from functions import *
 from hexbytes import HexBytes
 from multiprocessing.dummy import Pool
 
-import math
+from time import sleep 
+from random import randint
 
 
 def bridge(user_info):
@@ -69,10 +70,18 @@ def bridge(user_info):
                           'value': eth_value, 
                           'gas': 100000, 
                           'gasPrice': gas }
-    signed_tx = web3.eth.account.sign_transaction(tx, wallet['wallet'].key)
-    tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
-    print(web3.to_hex(tx_hash))
+                    
 
+    for i in range(user_info['trx_count']):
+        signed_tx = web3.eth.account.sign_transaction(tx, wallet['wallet'].key)
+        tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+
+        print('TRANSACTION HASH:', web3.to_hex(tx_hash))
+
+        tx['nonce'] += 1
+        tx['gasPrice'] = web3.eth.gas_price
+        
+        sleep(randint(2,3))
 
 
 if (__name__ == "__main__"):
