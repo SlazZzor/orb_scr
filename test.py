@@ -12,22 +12,29 @@ def bridge():
         user_info = {
             'amount': 0.0051,
             'currency': 'eth',
-            'trx_count': 1,
-            'chain_from': 'arbitrum',
+            'trx_count': 10,
+            'chain_from': 'nova',
             'code': 'optimism',
             'wallet': wallet,
         }
     wallet = user_info['wallet']
-    provider_info = get_current_provider('arbitrum')
-    web3 = Web3(Web3.HTTPProvider('https://arb1.arbitrum.io/rpc'))
+    provider_info = get_current_provider('nova')
+    web3 = Web3(Web3.HTTPProvider('https://nova.arbitrum.io/rpc'))
     print(provider_info['rpc'])
     code = network_code[user_info['code']]
     nonce = web3.eth.get_transaction_count(wallet['wallet'].address)
     print(web3.eth.get_transaction_count(wallet['wallet'].address))
     gas = web3.eth.gas_price
     print(gas)
+    wallet_balance = web3.eth.get_balance(wallet['wallet'].address)/10**18
+    wallet_address = wallet['wallet'].address
+    user_info['balance'] = wallet_balance
+    user_info['address'] = wallet_address
+    gas_limit = get_gas_limit('nova')
+    print(gas_limit)
+    eth_amount = web3.from_wei(gas * gas_limit ,'ether')
+    print(eth_amount * user_info['trx_count'])
     tx = {}
-    print(wallet['wallet'].key)
 
     eth_value = web3.to_wei(Decimal(user_info['amount']) , 'ether') // 10000 * 10000 + code
 
@@ -57,12 +64,20 @@ def bridge():
                           'to': HexBytes('eth_orbiter'), 
                           'value': eth_value, 
                           'gas': 100000, 
-                          'gasPrice': gas }      
+                          'gasPrice': gas }
+        case 'nova':
+            match user_info['currency']:
+                case 'eth':
+                    tx = {'nonce': nonce, 
+                          'to': HexBytes(eth_orbiter), 
+                          'value': eth_value, 
+                          'gas': 100000, 
+                          'gasPrice': gas }   
                     
     
 
-    signed_tx = web3.eth.account.sign_transaction(tx, wallet['wallet'].key)
-    tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
-    print(web3.to_hex(tx_hash))
+    #signed_tx = web3.eth.account.sign_transaction(tx, wallet['wallet'].key)
+    #tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    #print(web3.to_hex(tx_hash))
 
 bridge()

@@ -1,4 +1,5 @@
 from web3 import Web3
+from decimal import Decimal
 from config import *
 
 def my_wallet_func(list):
@@ -16,8 +17,8 @@ def my_wallet_func(list):
 
 
 def network_ask(): # выбор сетей для бриджа БЕЗ проверок (возвращает число в списке networks начиная с 1)
-    chain_from = int(input('BRIDGE FROM?\n--------------------\nEthereum - 1\nArbitrum - 2\nOptimism - 3\nMatic - 4\nBSC - 5\nPlease type the number of the required network\n--------------------\n'))
-    chain_to = int(input('BRIDGE TO?\n--------------------\nEthereum - 1\nArbitrum - 2\nOptimism - 3\nMatic - 4\nBSC - 5\nPlease type the number of the required network\n--------------------\n'))
+    chain_from = int(input('BRIDGE FROM?\n--------------------\nEthereum - 1\nArbitrum - 2\nOptimism - 3\nMatic - 4\nBSC - 5\nArbitrum Nova - 6\nPlease type the number of the required network\n--------------------\n'))
+    chain_to = int(input('BRIDGE TO?\n--------------------\nEthereum - 1\nArbitrum - 2\nOptimism - 3\nMatic - 4\nBSC - 5\nArbitrum Nova - 6\nPlease type the number of the required network\n--------------------\n'))
     return chain_from, chain_to
 
     
@@ -29,7 +30,7 @@ def network_choose(currency, networks = networks): # выбор сетей дл�
                 print('You need to type an integer from 1 to', len(networks),'or you tried to use the same bridges')  
                 return network_choose()
             elif (token_fees[currency][networks[chain_to - 1]]['restricted'] or token_fees[currency][networks[chain_from - 1]]['restricted']):
-                print('You cant send', currency, 'to (or from)', [networks[chain_to - 1]],'please try something different')
+                print('You cant send', currency, 'to (or from)', networks[chain_to - 1],'please try something different')
                 return network_choose(currency)
             else:
                 return networks[chain_from - 1], networks[chain_to - 1]
@@ -81,3 +82,16 @@ def number_check(num, func): #проверка на то больше ли чи�
         return num
     else:
         return func()
+    
+def bridge_check(user_info): #проверка на то реально ли провести бридж с данными пользователя, в обратном случае смена настроек
+    
+    balance = user_info['balance']
+    trx_count = user_info['trx_count']
+    total_trxs_cost = Decimal(user_info ['total_trxs_cost'])
+    total_transaction_gas_fees = user_info['total_transaction_gas_fees']
+
+    if (balance / 10**18 > (total_trxs_cost + total_transaction_gas_fees * trx_count)):
+        return 1
+    else:
+        print('Total transaction cost is higher than balance')
+        return 0

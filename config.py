@@ -4,6 +4,9 @@ import json
 def get_current_provider(name) -> {}:
     return providers[name]
 
+def get_gas_limit(name) -> {}:
+    return gas_limit[name]
+
 
 ERC20_ABI = json.loads('''[{"inputs":[{"internalType":"string","name":"_name","type":"string"},{"internalType":"string","name":"_symbol","type":"string"},{"internalType":"uint256","name":"_initialSupply","type":"uint256"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint8","name":"decimals_","type":"uint8"}],"name":"setupDecimals","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}]''')
 
@@ -13,9 +16,18 @@ eth_orbiter = '0x80C67432656d59144cEFf962E8fAF8926599bCF8'
 dai_orbiter = '0x095D2918B03b2e86D68551DCF11302121fb626c9'
 
 
-networks = ['ethereum', 'arbitrum', 'optimism', 'matic', 'bsc']
+networks = ['ethereum', 'arbitrum', 'optimism', 'matic', 'bsc', 'nova']
 coins = ['eth','usdc','usdt','dai']
 
+
+gas_limit = {
+    'ethereum': 21000,
+    'arbitrum': 500000,
+    'optimism': 0,
+    'matic': 0,
+    'bsc': 0,
+    'nova': 100000,
+}
 
 network_code = {
     'ethereum': 9001,
@@ -23,6 +35,7 @@ network_code = {
     'optimism': 9007,
     'matic': 9006,
     'bsc': 9015,
+    'nova': 9016,
 }
 
 
@@ -82,6 +95,10 @@ token_fees = {
             'withholding_fee': 12.8,
             'restricted': False
         },
+        'nova' : {
+            'withholding_fee': 1,
+            'restricted': False
+        }
     },
     'usdt': {
         'matic': {
@@ -104,6 +121,10 @@ token_fees = {
             'withholding_fee': 12.8,
             'restricted': False
         },
+        'nova' : {
+            'withholding_fee': None,
+            'restricted': True
+        }
     },
     'dai': {
         'matic': {
@@ -126,6 +147,10 @@ token_fees = {
             'withholding_fee': 12.8,
             'restricted': False
         },
+        'nova' : {
+            'withholding_fee': None,
+            'restricted': True
+        }
     },
     'eth': {
         'matic': {
@@ -148,6 +173,10 @@ token_fees = {
             'withholding_fee': 0.0062,
             'restricted': False
         },
+        'nova' : {
+            'withholding_fee': 0.0005,
+            'restricted': False
+        }
     },
 }
 
@@ -178,6 +207,9 @@ token_contracts = {
             'usdc': '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
             'usdt': '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
             'dai': '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3'
+        },
+    'nova': {
+            'usdc': '0x750ba8b76187092b0d1e87e28daaf484d1b5273b'
         },
 }
 
@@ -243,6 +275,16 @@ transfer_limit = {
                         'max': 10
                     },
                 },
+        'nova': {
+                    'eth': {
+                        'min': 0.005,
+                        'max': 5
+                    },
+                    'usdc': {
+                                    'min': 0.005,
+                                    'max': 10000
+                    },
+        },
     },
     'arbitrum': {
             'matic': {
@@ -305,6 +347,16 @@ transfer_limit = {
                                 'max': 10
                             },
                    },
+            'nova': {
+                    'eth': {
+                        'min': 0.005,
+                        'max': 5
+                    },
+                    'usdc': {
+                                    'min': 0.005,
+                                    'max': 10000
+                    },
+        },
     },
     'optimism': {
                 'matic': {
@@ -323,6 +375,16 @@ transfer_limit = {
                     'dai': {
                                     'min': 0.01,
                                     'max': 3000
+                    },
+                },
+                'nova': {
+                    'eth': {
+                        'min': 0.005,
+                        'max': 5
+                    },
+                    'usdc': {
+                                    'min': 0.005,
+                                    'max': 10000
                     },
                 },
                 'arbitrum': {
@@ -369,7 +431,7 @@ transfer_limit = {
                        },
         },
     'matic': {
-                    'optimism': {
+                'optimism': {
                         'eth': {
                             'min': 0.005,
                             'max': 10
@@ -387,7 +449,7 @@ transfer_limit = {
                                         'max': 3000
                         },
                     },
-                    'arbitrum': {
+                'arbitrum': {
                                     'eth': {
                                         'min': 0.005,
                                         'max': 10
@@ -405,7 +467,7 @@ transfer_limit = {
                                                     'max': 3000
                                     },
                                 },
-                    'ethereum': {
+                'ethereum': {
                                     'eth': {
                                         'min': 0.005,
                                         'max': 10
@@ -423,37 +485,105 @@ transfer_limit = {
                                                     'max': 3000
                                     },
                                 },
-                    'bsc': {
+                'bsc': {
                                     'eth': {
                                         'min': 0.005,
                                         'max': 10
                                     },
                            },
+                'nova': {
+                    'eth': {
+                        'min': 0.005,
+                        'max': 5
+                    },
+                    'usdc': {
+                                    'min': 0.005,
+                                    'max': 10000
+                                },
+        },
             },
     'bsc': {
-                        'optimism': {
+                'optimism': {
                             'eth': {
                                 'min': 0.005,
                                 'max': 10
                             },
                         },
-                        'arbitrum': {
+                'arbitrum': {
                                         'eth': {
                                             'min': 0.005,
                                             'max': 10
                                         }
                                     },
-                        'ethereum': {
+                'ethereum': {
                                         'eth': {
                                             'min': 0.005,
                                             'max': 10
                                         }
                                     },
-                        'matic': {
+                'matic': {
                                         'eth': {
                                             'min': 0.005,
                                             'max': 10
                                         },
                                },
+                'nova': {
+                    'eth': {
+                        'min': 0.005,
+                        'max': 5
+                    },
+                    'usdc': {
+                                    'min': 0.005,
+                                    'max': 10000
+                                },
+        },               
+    },
+    'nova': {
+                'matic': {
+                    'eth': {
+                        'min': 0.005,
+                        'max': 3
+                    },
+                    'usdc': {
+                                    'min': 0.005,
+                                    'max': 3000
+                                },
                 },
+                'optimism': {
+                    'eth': {
+                        'min': 0.005,
+                        'max': 3
+                    },
+                    'usdc': {
+                                    'min': 0.005,
+                                    'max': 3000
+                                },
+                },
+                'arbitrum': {
+                                'eth': {
+                                    'min': 0.005,
+                                    'max': 3
+                                },
+                                'usdc': {
+                                                'min': 0.005,
+                                                'max': 3000
+                                            },
+                            },
+                'ethereum': {
+                                'eth': {
+                                    'min': 0.005,
+                                    'max': 3
+                                },
+                                'usdc': {
+                                                'min': 0.005,
+                                                'max': 3000
+                                            },
+                            },
+                'bsc': {
+                                'eth': {
+                                    'min': 0.005,
+                                    'max': 3
+                                },
+                       },
+        },
 }
