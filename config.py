@@ -33,7 +33,7 @@ network_chain_id = {
 
 gas_limit = {
     'ethereum': 21000,
-    'arbitrum': 500000,
+    'arbitrum': 1000000 ,
     'optimism': 0,
     'matic': 0,
     'bsc': 0,
@@ -214,10 +214,10 @@ token_contracts = {
         'dai': '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063'
     },
     'bsc': {
-            'eth': '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
+            'eth': '0x2170Ed0880ac9A755fd29B2688956BD959F933F8',
         },
     'nova': {
-            'usdc': '0x750ba8b76187092b0d1e87e28daaf484d1b5273b'
+            'usdc': '0x750ba8b76187092B0D1E87E28daaf484d1b5273b'
         },
 }
 
