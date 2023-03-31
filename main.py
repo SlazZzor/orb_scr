@@ -10,69 +10,117 @@ from random import randint
 
 def bridge(user_info):
     wallet = user_info['wallet']
-    provider_info = get_current_provider(user_info['chain_from'])
+    chain_from = user_info['chain_from']
+    provider_info = get_current_provider(chain_from)
     web3 = Web3(Web3.HTTPProvider(provider_info['rpc']))
     code = network_code[user_info['code']]
+    currency = user_info['currency']
+    amount = Decimal(user_info['amount'])
+    
 
     nonce = web3.eth.get_transaction_count(wallet['wallet'].address)
+    chain_id = network_chain_id[chain_from]
 
 
     gas = web3.eth.gas_price
-    gas_limit = get_gas_limit(user_info['chain_from'])
+    gas_limit = get_gas_limit(chain_from)
     total_transaction_gas_fees = web3.from_wei(Decimal(gas) * Decimal(gas_limit), 'ether')
+    
 
     
     wallet_balance = web3.eth.get_balance(wallet['wallet'].address)
     wallet_address = wallet['wallet'].address
 
+
+
     user_info['balance'] = wallet_balance
     user_info['address'] = wallet_address
     user_info['total_transaction_gas_fees'] = total_transaction_gas_fees
 
-    tx = {}
-    
-    eth_value = web3.to_wei((Decimal(user_info['amount'])) + total_transaction_gas_fees, 'ether')// 10000 * 10000 + code
+    if ((user_info['currency']) != 'eth'): #инизиализация контракта если выбран альт-коин
+        unicorn = web3.eth.contract(address = token_contracts[chain_from][currency] , abi = ERC20_ABI )
+        user_info['contract_decimals'] = Decimal(unicorn.functions.decimals().call())
+        user_info['stable_balance'] = Decimal(unicorn.functions.balanceOf(wallet_address).call())
+        user_info['is_stable'] = True
+
+        value = int(Decimal(10 ** user_info['contract_decimals'] * amount)) // 10000 * 10000 + code
+    else:
+        value = web3.to_wei((amount) + total_transaction_gas_fees, 'ether')// 10000 * 10000 + code
 
     if bridge_check(user_info) == 0:
         return 0
-        
+    
+    print ('Wallet address: ', wallet_address)
 
-    match user_info['chain_from']:
+
+    match chain_from:
         case 'ethereum':
             match user_info['currency']:
                 case 'eth':
                     tx = {'nonce': nonce, 
                           'to': HexBytes(eth_orbiter), 
-                          'value': eth_value,   
-                          'gas': 21000, 
-                          'gasPrice': gas } 
+                          'value': value,   
+                          'gas': gas_limit, 
+                          'gasPrice': gas }
+                case 'usdt':
+                     tx = unicorn.functions.transfer( HexBytes(usdt_orbiter) , 
+                        value,
+                        ).build_transaction({
+                         'chainId': chain_id,
+                         'gas': gas_limit,
+                         'maxFeePerGas': gas + web3.to_wei('1', 'gwei'),
+                         'maxPriorityFeePerGas': web3.to_wei('1', 'gwei'),
+                         'nonce': nonce,
+                         })
         case 'arbitrum':
             match user_info['currency']:
                 case 'eth': 
                     tx = {'nonce': nonce, 
                           'to': HexBytes(eth_orbiter), 
-                          'value': eth_value, 
-                          'gas': 500000, 
+                          'value': value, 
+                          'gas': gas_limit, 
                           'gasPrice': gas } 
+                case 'usdt':
+                     tx = unicorn.functions.transfer( usdt_orbiter, 
+                        value,
+                        ).build_transaction({
+                         'chainId': chain_id,
+                         'gas': gas_limit,
+                         'maxFeePerGas': gas + web3.to_wei('1', 'gwei'),
+                         'maxPriorityFeePerGas': web3.to_wei('1', 'gwei'),
+                         'nonce': nonce,
+                         })
         case 'optimism':
             match user_info['currency']:
                 case 'eth':
                         tx = {'nonce': nonce, 
                           'to': HexBytes(eth_orbiter), 
-                          'value': eth_value, 
-                          'gas': 100000, 
+                          'value': value, 
+                          'gas': gas_limit, 
                           'gasPrice': gas }
+                case 'usdt':
+                     tx = unicorn.functions.transfer( HexBytes(usdt_orbiter) , 
+                        value,
+                        ).build_transaction({
+                         'chainId': chain_id,
+                         'gas': gas_limit,
+                         'maxFeePerGas': gas + web3.to_wei('1', 'gwei'),
+                         'maxPriorityFeePerGas': web3.to_wei('1', 'gwei'),
+                         'nonce': nonce,
+                         })
         case 'nova':
             match user_info['currency']:
                 case 'eth':
                     tx = {'nonce': nonce, 
                           'to': HexBytes(eth_orbiter), 
-                          'value': eth_value, 
-                          'gas': 100000, 
+                          'value': value, 
+                          'gas': gas_limit, 
                           'gasPrice': gas }
                     
 
+
     for i in range(user_info['trx_count']):
+
         signed_tx = web3.eth.account.sign_transaction(tx, wallet['wallet'].key)
         tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
 
@@ -119,10 +167,8 @@ if (__name__ == "__main__"):
             'chain_to': chain_to,
             'wallet': wallet,
             'total_trxs_cost' : total_trxs_cost,
+            'is_stable': False,
         }
         collections_user_info.append(user_info)
 
     pool.map(bridge, collections_user_info)
-
-
-    

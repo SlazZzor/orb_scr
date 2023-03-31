@@ -67,7 +67,7 @@ def ask_currency(coins = coins): #спрашиваем какую монетку
     try:
         while True:
             currency = int(input('--------------------\nPlease choose the preferred coin to bridge and type the following number:\n\nETH - 1\nUSDC - 2\nUSDT - 3\nDAI - 4\n--------------------\n'))
-            if (currency <= 0 or currency >= len(coins)):
+            if (currency <= 0 or currency > len(coins)):
                  print('You need to type an integer from 1 to', len(coins))  
                  return ask_currency()
             else:
@@ -83,14 +83,20 @@ def number_check(num, func): #проверка на то больше ли чи�
     else:
         return func()
     
-def bridge_check(user_info): #проверка на то реально ли провести бридж с данными пользователя, в обратном случае смена настроек
-    
+def bridge_check(user_info): #проверка на то реально ли провести бридж с данными пользователя
     balance = user_info['balance']
     trx_count = user_info['trx_count']
-    total_trxs_cost = Decimal(user_info ['total_trxs_cost'])
+    total_trxs_cost = Decimal(user_info ['total_trxs_cost'])    
     total_transaction_gas_fees = user_info['total_transaction_gas_fees']
+    is_stable = user_info['is_stable']
 
-    if (balance / 10**18 > (total_trxs_cost + total_transaction_gas_fees * trx_count)):
+    if is_stable:
+        stable_balance = user_info['stable_balance']
+        contract_decimals = user_info['contract_decimals']
+        if ((balance / 10**18 > (total_transaction_gas_fees * trx_count)) and (total_trxs_cost < (stable_balance / 10 ** contract_decimals))):
+            return 1
+        return 0
+    elif (balance / 10**18 > (total_trxs_cost + total_transaction_gas_fees * trx_count)):
         return 1
     else:
         print('Total transaction cost is higher than balance')
