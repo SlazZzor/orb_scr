@@ -36,8 +36,18 @@ def bridge(user_info):
     user_info['address'] = wallet_address
     user_info['total_transaction_gas_fees'] = total_transaction_gas_fees
 
+    if chain_from == 'bsc' or chain_from == 'matic':
+        unicorn = web3.eth.contract(address = token_contracts[chain_from][currency] , abi = ERC20_ABI )
+        user_info['contract_decimals'] = Decimal(unicorn.functions.decimals().call())
+        user_info['stable_balance'] = Decimal(unicorn.functions.balanceOf(wallet_address).call())
 
-    if ((user_info['currency']) != 'eth'): #инизиализация контракта если выбран альт-коин
+
+        if currency in ['usdc', 'usdt', 'dai']:
+            user_info['is_stable'] = True
+
+
+        value = int(Decimal(10 ** user_info['contract_decimals'] * amount)) // 10000 * 10000 + code
+    elif ((user_info['currency']) != 'eth'): #инизиализация контракта если выбран альт-коин
         unicorn = web3.eth.contract(address = token_contracts[chain_from][currency] , abi = ERC20_ABI )
         user_info['contract_decimals'] = Decimal(unicorn.functions.decimals().call())
         user_info['stable_balance'] = Decimal(unicorn.functions.balanceOf(wallet_address).call())
@@ -160,6 +170,60 @@ def bridge(user_info):
                          })
                 case 'dai':
                      tx = unicorn.functions.transfer( dai_orbiter , 
+                        value,
+                        ).build_transaction({
+                         'chainId': chain_id,
+                         'gas': gas_limit,
+                         'maxFeePerGas': gas + web3.to_wei('1', 'gwei'),
+                         'maxPriorityFeePerGas': web3.to_wei('1', 'gwei'),
+                         'nonce': nonce,
+                         })
+        case 'matic':
+            match user_info['currency']:
+                case 'eth':
+                    tx = unicorn.functions.transfer( weth_orbiter , 
+                        value,
+                        ).build_transaction({
+                         'chainId': chain_id,
+                         'gas': gas_limit,
+                         'maxFeePerGas': gas + web3.to_wei('5', 'gwei'),
+                         'maxPriorityFeePerGas': web3.to_wei('30', 'gwei'),
+                         'nonce': nonce,
+                         })
+                case 'usdt':
+                     tx = unicorn.functions.transfer( usdt_orbiter , 
+                        value,
+                        ).build_transaction({
+                         'chainId': chain_id,
+                         'gas': gas_limit,
+                         'maxFeePerGas': gas + web3.to_wei('5', 'gwei'),
+                         'maxPriorityFeePerGas': web3.to_wei('30', 'gwei'),
+                         'nonce': nonce,
+                         })
+                case 'usdc':
+                     tx = unicorn.functions.transfer( usdc_orbiter , 
+                        value,
+                        ).build_transaction({
+                         'chainId': chain_id,
+                         'gas': gas_limit,
+                         'maxFeePerGas': gas + web3.to_wei('5', 'gwei'),
+                         'maxPriorityFeePerGas': web3.to_wei('30', 'gwei'),
+                         'nonce': nonce,
+                         })
+                case 'dai':
+                     tx = unicorn.functions.transfer( dai_orbiter , 
+                        value,
+                        ).build_transaction({
+                         'chainId': chain_id,
+                         'gas': gas_limit,
+                         'maxFeePerGas': gas + web3.to_wei('5', 'gwei'),
+                         'maxPriorityFeePerGas': web3.to_wei('30', 'gwei'),
+                         'nonce': nonce,
+                         })
+        case 'bsc':
+            match user_info['currency']:
+                case 'eth':
+                    tx = unicorn.functions.transfer( eth_orbiter , 
                         value,
                         ).build_transaction({
                          'chainId': chain_id,

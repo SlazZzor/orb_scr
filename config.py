@@ -16,6 +16,7 @@ usdc_orbiter = '0x41d3D33156aE7c62c094AAe2995003aE63f587B3'
 usdt_orbiter = '0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC'
 eth_orbiter = '0x80C67432656d59144cEFf962E8fAF8926599bCF8'
 dai_orbiter = '0x095D2918B03b2e86D68551DCF11302121fb626c9'
+weth_orbiter = '0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8'
 
 
 networks = ['ethereum', 'arbitrum', 'optimism', 'matic', 'bsc', 'nova']
@@ -34,9 +35,9 @@ network_chain_id = {
 gas_limit = {
     'ethereum': 21000,
     'arbitrum': 1000000 ,
-    'optimism': 0,
-    'matic': 0,
-    'bsc': 0,
+    'optimism': 50000,
+    'matic': 100000,
+    'bsc': 100000,
     'nova': 100000,
 }
 
@@ -52,7 +53,7 @@ network_code = {
 
 providers = {
     'matic': {'chainId': 137,
-              "rpc": 'https://rpc-mainnet.matic.quiknode.pro',
+              "rpc": 'https://polygon.llamarpc.com',
               "name": 'matic'},
     'bsc': {'chainId': 56,
             "rpc": 'https://rpc.ankr.com/bsc',
