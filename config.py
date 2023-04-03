@@ -32,9 +32,9 @@ network_chain_id = {
     'nova': 42170,
 }
 
-gas_limit = {
+gas_limit = {   
     'ethereum': 21000,
-    'arbitrum': 1000000 ,
+    'arbitrum': 1000000,
     'optimism': 50000,
     'matic': 100000,
     'bsc': 100000,
@@ -56,8 +56,7 @@ providers = {
               "rpc": 'https://polygon.llamarpc.com',
               "name": 'matic'},
     'bsc': {'chainId': 56,
-            "rpc": 'https://rpc.ankr.com/bsc',
-            # WARNING: ANKR BSC RPC is set for low gas fees, you may need to change it for higher transaction speed
+            "rpc": 'https://bsc-dataseed.binance.org/',
             "name": 'bsc'},
     'ethereum': {'chainId': 1,
             "rpc": 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',

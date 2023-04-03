@@ -56,7 +56,7 @@ def bridge(user_info):
         value = int(Decimal(10 ** user_info['contract_decimals'] * amount)) // 10000 * 10000 + code
     else:
         value = web3.to_wei(Decimal((amount) + total_transaction_gas_fees), 'ether')// 10000 * 10000 + code
-
+        
     if bridge_check(user_info) == 0:
         return 0
     
@@ -223,13 +223,12 @@ def bridge(user_info):
         case 'bsc':
             match user_info['currency']:
                 case 'eth':
-                    tx = unicorn.functions.transfer( eth_orbiter , 
+                    tx = unicorn.functions.transfer( weth_orbiter , 
                         value,
                         ).build_transaction({
                          'chainId': chain_id,
                          'gas': gas_limit,
-                         'maxFeePerGas': gas + web3.to_wei('1', 'gwei'),
-                         'maxPriorityFeePerGas': web3.to_wei('1', 'gwei'),
+                         'gasPrice': gas,
                          'nonce': nonce,
                          })
         case 'nova':
