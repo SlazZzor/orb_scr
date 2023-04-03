@@ -1,4 +1,5 @@
-### Features
+
+# Features
 
 - Supports Orbiter Bridges
 - Supports multiple transactions at once
@@ -7,13 +8,25 @@
 
 # orb_scr
 
+# Table of contents
+1. [Start](#start)
+2. [Wallet Configuration](#wc)
+3. [Fees Table](#ft)
+    1. [USDC](#usdc)
+    2. [DAI](#dai)
+    3. [USDT](#usdt)
+4. [Links](#links)
+5. [Author](#author)
 
-[TOC]
 
-#Start
+# Start <a name="start"></a>
 To start we need to download all needed libraries:
 `pip3 install -r requirements.txt`
-##Wallet configuration
+
+
+## Wallet configuration <a name="wc"></a>
+
+
 At the moment the script supports ONLY private keys, secret phrase support will be added later.
     
     privatekey1
@@ -25,10 +38,10 @@ At the moment the script supports ONLY private keys, secret phrase support will 
 ----
 
                     
-###Fees table
+# Fees table <a name="ft"></a>
                     
 
-####USDC
+## USDC <a name="usdc"></a>
 
 | chain_to | Fee in USDC |
 | ------------- | ------------- |
@@ -39,7 +52,8 @@ At the moment the script supports ONLY private keys, secret phrase support will 
 | BSC | -  |
 | Arbitrum Nova  | 1  |
 
-####DAI
+## DAI <a name="dai"></a>
+
 
 | chain_to | Fee in DAI |
 | ------------- | ------------- |
@@ -50,7 +64,7 @@ At the moment the script supports ONLY private keys, secret phrase support will 
 | BSC | -  |
 | Arbitrum Nova  | -  |
 
-####USDT
+## USDT <a name="usdt"></a>
 
 | chain_to | Fee in USDT |
 | ------------- | ------------- |
@@ -61,7 +75,7 @@ At the moment the script supports ONLY private keys, secret phrase support will 
 | BSC | -  |
 | Arbitrum Nova  | -  |
 
-####ETH
+## ETH <a name="eth"></a>
 
 | chain_to | Fee in ETH |
 | ------------- | ------------- |
@@ -75,7 +89,7 @@ At the moment the script supports ONLY private keys, secret phrase support will 
 
                 
 ----
-###Links
+# Links <a name="links"></a>
 
 [Contact me](https://t.me/slazzzor)
 
@@ -83,4 +97,4 @@ At the moment the script supports ONLY private keys, secret phrase support will 
 
                 
 
-#Made by @SlazZzor 
+# Made by @SlazZzor <a name="author"></a>
