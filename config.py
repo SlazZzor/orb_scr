@@ -50,6 +50,15 @@ network_code = {
     'nova': 9016,
 }
 
+network_code_maker = {
+    'ethereum': 1,
+    'arbitrum': 2,
+    'optimism': 7,
+    'matic': 6,
+    'bsc': 15,
+    'nova': 16,
+}
+
 
 providers = {
     'matic': {'chainId': 137,
@@ -84,108 +93,84 @@ providers = {
 def get_default_provider(): # получаем провайдера эфириума для инициализации кошелька
     return {'provider': providers['ethereum']}
 
-token_fees = {
+is_restricted = {
     'usdc': {
         'matic': {
-            'withholding_fee': 1.5,
             'restricted': False,
         },
         'optimism': {
-            'withholding_fee': 1.8,
             'restricted': False
         },
         'arbitrum': {
-            'withholding_fee': 1.8,
             'restricted': False
         },
         'bsc': {
-            'withholding_fee': None,
             'restricted': True
         },
         'ethereum': {
-            'withholding_fee': 12.8,
             'restricted': False
         },
         'nova' : {
-            'withholding_fee': 1,
             'restricted': False
         }
     },
     'usdt': {
         'matic': {
-            'withholding_fee': 2,
             'restricted': False
         },
         'optimism': {
-            'withholding_fee': 2,
             'restricted': False
         },
         'arbitrum': {
-            'withholding_fee': 2.5,
             'restricted': False
         },
         'bsc': {
-            'withholding_fee': None,
             'restricted': True
         },
         'ethereum': {
-            'withholding_fee': 12.8,
             'restricted': False
         },
         'nova' : {
-            'withholding_fee': None,
             'restricted': True
         }
     },
     'dai': {
         'matic': {
-            'withholding_fee': 1.5,
             'restricted': False
         },
         'optimism': {
-            'withholding_fee': 2,
             'restricted': False
         },
         'arbitrum': {
-            'withholding_fee': 2,
             'restricted': False
         },
         'bsc': {
-            'withholding_fee': None,
             'restricted': True
         },
         'ethereum': {
-            'withholding_fee': 12.8,
             'restricted': False
         },
         'nova' : {
-            'withholding_fee': None,
             'restricted': True
         }
     },
     'eth': {
         'matic': {
-            'withholding_fee': 0.0005,
             'restricted': False
         },
         'optimism': {
-            'withholding_fee': 0.0005,
             'restricted': False
         },
         'arbitrum': {
-            'withholding_fee': 0.0006,
             'restricted': False
         },
         'bsc': {
-            'withholding_fee': 0.0005,
             'restricted': False
         },
         'ethereum': {
-            'withholding_fee': 0.0062,
             'restricted': False
         },
         'nova' : {
-            'withholding_fee': 0.0005,
             'restricted': False
         }
     },

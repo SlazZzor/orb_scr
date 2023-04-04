@@ -29,7 +29,7 @@ def network_choose(currency, networks = networks): # выбор сетей дл�
             if ((chain_from == chain_to) or (chain_from <= 0) or (chain_from > len(networks)) or (chain_to <= 0) or (chain_to > len(networks))):
                 print('You need to type an integer from 1 to', len(networks),'or you tried to use the same bridges')  
                 return network_choose()
-            elif (token_fees[currency][networks[chain_to - 1]]['restricted'] or token_fees[currency][networks[chain_from - 1]]['restricted']):
+            elif (is_restricted[currency][networks[chain_to - 1]]['restricted'] or is_restricted[currency][networks[chain_from - 1]]['restricted']):
                 print('You cant send', currency, 'to (or from)', networks[chain_to - 1],'please try something different')
                 return network_choose(currency)
             else:

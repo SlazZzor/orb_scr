@@ -268,16 +268,23 @@ def bridge(user_info):
 if (__name__ == "__main__"):
     with open('wallets.txt', 'r') as f:
         private_keys = f.read().splitlines()
+    with open('maker.json', 'r') as f:
+        maker_info = json.load(f)
     wallets = my_wallet_func(private_keys)
     currency = ask_currency()
     chain_from, chain_to = network_choose(currency)
+
+
+    BRIDGE_MAKER_NETWORK = str(network_code_maker[chain_from]) + '-' + str(network_code_maker[chain_to]) # для maker.json
+    BRIDGE_MAKER_CURRENCY = str(currency.upper()) + '-' + str(currency.upper())
+
+
     trx_count = ask_transaction_count()
     amount = ask_amount(currency, chain_from, chain_to) 
-    trx_cost = (amount + 0.003 * amount + token_fees[currency][chain_to]['withholding_fee']) 
+    trx_cost = (amount + 0.003 * amount + maker_info[BRIDGE_MAKER_NETWORK][BRIDGE_MAKER_CURRENCY]['tradingFee']) 
     total_trxs_cost = trx_cost * trx_count
 
 
-    print(token_fees[currency][chain_to]['withholding_fee'])
     print('CHAIN FROM -> ', chain_from, '\nDESTINATION -> ', chain_to)
     print ('Quantity of transactions:', trx_count)
     print ('The currency is set to:', currency)
