@@ -55,7 +55,7 @@ def bridge(user_info):
 
         value = int(Decimal(10 ** user_info['contract_decimals'] * amount)) // 10000 * 10000 + code
     else:
-        value = web3.to_wei(Decimal((amount) + total_transaction_gas_fees), 'ether')// 10000 * 10000 + code
+        value = web3.to_wei(Decimal((amount) + total_transaction_gas_fees), 'ether') // 10000 * 10000 + code
         
     if bridge_check(user_info) == 0:
         return 0
@@ -249,7 +249,7 @@ def bridge(user_info):
                          'maxPriorityFeePerGas': web3.to_wei('1', 'gwei'),
                          'nonce': nonce,
                          })
-
+                     
 
     for i in range(user_info['trx_count']):
 
@@ -280,8 +280,8 @@ if (__name__ == "__main__"):
 
 
     trx_count = ask_transaction_count()
-    amount = ask_amount(currency, chain_from, chain_to) 
-    trx_cost = (amount + 0.003 * amount + maker_info[BRIDGE_MAKER_NETWORK][BRIDGE_MAKER_CURRENCY]['tradingFee']) 
+    amount = Decimal(ask_amount(currency, chain_from, chain_to))
+    trx_cost = amount + Decimal(maker_info[BRIDGE_MAKER_NETWORK][BRIDGE_MAKER_CURRENCY]['tradingFee']) / Decimal(1000) * amount + Decimal(maker_info[BRIDGE_MAKER_NETWORK][BRIDGE_MAKER_CURRENCY]['tradingFee'])
     total_trxs_cost = trx_cost * trx_count
 
 
